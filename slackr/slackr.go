@@ -115,8 +115,15 @@ func (s *Slackr) SendPrivateMessage(user string, text string) error {
 		return err
 	}
 
+	opts := slack.MsgOptionBlocks(
+		&slack.SectionBlock{
+			Type: slack.MBTSection,
+			Text: &slack.TextBlockObject{Type: "mrkdwn", Text: text},
+		},
+	)
+
 	// response.Channel, response.Timestamp, err
-	_, _, err = s.client.PostMessage(ch.ID, slack.MsgOptionText(text, false))
+	_, _, err = s.client.PostMessage(ch.ID, opts)
 	if err != nil {
 		return err
 	}
