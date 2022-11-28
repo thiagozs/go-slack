@@ -1,12 +1,8 @@
 # go-slack, simple slack message notifier
 
-> ***Work in progress***
----
-> Need improvements
-> * [ ] - Logger
-> * [ ] - Logger debug
-> * [ ] - Options
+Simple wrapper for slack user notification. The purpose of this project are find the user by some anchor and send a notification. The project has ability to search by approach (fuzzy algorithm).
 
+You need a valid **token** bot of slack.
 ## Start with code
 
 ```golang
@@ -30,7 +26,7 @@ if err != nil {
 }
 ```
 
-Find user by approche (fuzzy algorithm)
+Find user by approach (fuzzy algorithm)
 
 ```golang
 users, err := slk.SearchFuzzyMatch(slackr.REALNAME, term)
