@@ -133,6 +133,7 @@ func (s *Slackr) SendPrivateMessage(user string, text string) error {
 
 func (s *Slackr) SearchFuzzyMatch(kind Kind, term string) ([]ResultFuzzy, error) {
 	s.term = term
+	s.terms = []string{}
 
 	uersr, err := s.GetUsers()
 	if err != nil {
