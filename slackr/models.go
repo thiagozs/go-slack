@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/slack-go/slack"
+	"github.com/thiagozs/go-slack/options"
 	"github.com/thiagozs/go-slack/pkg/fuzzy"
 )
 
@@ -20,13 +21,6 @@ func (d Kind) String() string {
 	return []string{"email", "realName", "firstName", "lastName"}[d]
 }
 
-type SlackrOptions func(s *SlackrParams) error
-
-type SlackrParams struct {
-	Token string
-	Debug bool
-}
-
 type ResultFuzzy struct {
 	Match   bool
 	Query   string
@@ -37,7 +31,7 @@ type ResultFuzzy struct {
 
 type Slackr struct {
 	client *slack.Client
-	cfg    *SlackrParams
+	cfg    *options.OptionsParams
 	fuzzy  *fuzzy.FzfSearcher
 	terms  []string
 	term   string

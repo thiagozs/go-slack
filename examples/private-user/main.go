@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/thiagozs/go-slack/options"
 	"github.com/thiagozs/go-slack/pkg/utils"
 	"github.com/thiagozs/go-slack/slackr"
 )
@@ -25,9 +26,9 @@ func main() {
 
 	token := os.Getenv("SLACKBOT_TOKEN")
 
-	lopts := []slackr.SlackrOptions{
-		slackr.CfgDebug(false),
-		slackr.CfgToken(token),
+	lopts := []options.Options{
+		options.CfgDebug(false),
+		options.CfgToken(token),
 	}
 
 	slk, err := slackr.NewSlackClient(lopts)

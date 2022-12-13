@@ -7,11 +7,12 @@ import (
 	"os"
 
 	"github.com/slack-go/slack"
+	"github.com/thiagozs/go-slack/options"
 	"github.com/thiagozs/go-slack/pkg/fuzzy"
 )
 
-func NewSlackClient(opts []SlackrOptions) (*Slackr, error) {
-	c := &SlackrParams{}
+func NewSlackClient(opts []options.Options) (*Slackr, error) {
+	c := &options.OptionsParams{}
 	for _, opt := range opts {
 		if err := opt(c); err != nil {
 			return nil, err
@@ -82,7 +83,7 @@ func (s *Slackr) GetClient() *slack.Client {
 	return s.client
 }
 
-func (s *Slackr) GetConfig() *SlackrParams {
+func (s *Slackr) GetConfig() *options.OptionsParams {
 	return s.cfg
 }
 
@@ -211,4 +212,21 @@ func (s *Slackr) SearchByEmail(email string) (SlackrUser, error) {
 	}
 
 	return u, nil
+}
+
+func (s *Slackr) SendMessageChannel(channel string, text string) error {
+	opts := slack.MsgOptionBlocks(
+		&slack.SectionBlock{
+			Type: slack.MBTSection,
+			Text: &slack.TextBlockObject{Type: "mrkdwn", Text: text},
+		},
+	)
+
+	// response.Channel, response.Timestamp, err
+	_, _, err := s.client.PostMessage(channel, opts)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
