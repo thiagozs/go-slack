@@ -6,9 +6,11 @@ You need a valid **token** bot of slack.
 ## Start with code
 
 ```golang
-lopts := []slackr.SlackrOptions{
-    slackr.CfgDebug(false),
-    slackr.CfgToken(token),
+token := os.Getenv("SLACKBOT_TOKEN")
+
+lopts := []options.Options{
+    options.CfgDebug(false),
+    options.CfgToken(token),
 }
 
 slk, err := slackr.NewSlackClient(lopts)
@@ -30,6 +32,15 @@ Find user by approach (fuzzy algorithm)
 
 ```golang
 users, err := slk.SearchFuzzyMatch(slackr.REALNAME, term)
+if err != nil {
+    log.Fatal(err)
+}
+```
+
+Send message to a channel
+
+```golang
+users, err := slk.SendMessageChannel(channel, text)
 if err != nil {
     log.Fatal(err)
 }
