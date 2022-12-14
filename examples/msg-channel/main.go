@@ -28,7 +28,7 @@ func main() {
 		log.Fatalf("error: channel is required")
 	}
 
-	token := os.Getenv("SLACKBOT_TOKEN")
+	token := os.Getenv("SLACKBOT_TOKEN_GHACTIONS")
 
 	lopts := []options.Options{
 		options.CfgDebug(false),
