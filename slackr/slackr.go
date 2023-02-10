@@ -92,12 +92,24 @@ func (s *Slackr) GetToken() string {
 }
 
 func (s *Slackr) getUserByEmail(email string) (SlackrUser, error) {
-	users, err := s.GetUsers()
-	if err != nil {
-		return SlackrUser{}, err
+
+	var usersSlack []SlackrUser
+
+	if s.cached {
+		users, err := s.GetUsersFromCached()
+		if err != nil {
+			return SlackrUser{}, err
+		}
+		usersSlack = users
+	} else {
+		users, err := s.GetUsers()
+		if err != nil {
+			return SlackrUser{}, err
+		}
+		usersSlack = users
 	}
 
-	for _, user := range users {
+	for _, user := range usersSlack {
 		if user.Profile.Email == email {
 			return user, nil
 		}
@@ -136,12 +148,23 @@ func (s *Slackr) SearchFuzzyMatch(kind Kind, term string) ([]ResultFuzzy, error)
 	s.term = term
 	s.terms = []string{}
 
-	uersr, err := s.GetUsers()
-	if err != nil {
-		return []ResultFuzzy{}, err
+	var usersSlack []SlackrUser
+
+	if s.cached {
+		users, err := s.GetUsersFromCached()
+		if err != nil {
+			return []ResultFuzzy{}, err
+		}
+		usersSlack = users
+	} else {
+		users, err := s.GetUsers()
+		if err != nil {
+			return []ResultFuzzy{}, err
+		}
+		usersSlack = users
 	}
 
-	for _, user := range uersr {
+	for _, user := range usersSlack {
 		switch kind {
 		case EMAIL:
 			s.terms = append(s.terms, user.Profile.Email)
@@ -162,7 +185,7 @@ func (s *Slackr) SearchFuzzyMatch(kind Kind, term string) ([]ResultFuzzy, error)
 	for _, r := range rf {
 
 		user := SlackrUser{}
-		for _, u := range uersr {
+		for _, u := range usersSlack {
 			switch kind {
 			case EMAIL:
 				if u.Profile.Email == r.SortKey {
@@ -229,4 +252,34 @@ func (s *Slackr) SendMessageChannel(channel string, text string) error {
 	}
 
 	return nil
+}
+
+func (s *Slackr) SetCached(cached bool) {
+	s.cached = cached
+}
+
+func (s *Slackr) GetCached() bool {
+	return s.cached
+}
+
+func (s *Slackr) GetUsersSlack() []SlackrUser {
+	return s.users
+}
+
+func (s *Slackr) SetUsersSlack(users []SlackrUser) {
+	s.users = users
+}
+
+func (s *Slackr) GetUsersFromCached() ([]SlackrUser, error) {
+	if s.cached && len(s.users) == 0 {
+
+		users, err := s.GetUsers()
+		if err != nil {
+			return []SlackrUser{}, err
+		}
+
+		s.users = users
+	}
+
+	return s.users, nil
 }

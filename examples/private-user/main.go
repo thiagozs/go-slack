@@ -50,6 +50,10 @@ func main() {
 	log.Printf("Filter byEmail: %t\n", byEmail)
 	log.Printf("Filter byMatch: %t\n", byMatch)
 
+	// set cache, this will load all users from slack once time
+	// not mandatory, but will improve performance
+	slk.SetCached(true)
+
 	switch {
 	case byEmail:
 		user, err := slk.SearchByEmail(email)

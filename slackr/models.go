@@ -35,6 +35,8 @@ type Slackr struct {
 	fuzzy  *fuzzy.FzfSearcher
 	terms  []string
 	term   string
+	cached bool
+	users  []SlackrUser
 }
 
 type JSONTime int64
