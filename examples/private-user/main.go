@@ -65,7 +65,10 @@ func main() {
 		sendMsg = true
 
 	case byMatch:
-		term = regexp.MustCompile(`[^a-zA-Z0-9 ]+`).ReplaceAllString(term, " ")
+		term = regexp.MustCompile(`[^a-zA-Z ]+`).ReplaceAllString(term, " ")
+		term = regexp.MustCompile(`\s+`).ReplaceAllLiteralString(term, " ")
+		log.Printf("Filter term (treatment): %s\n", term)
+
 		users, err := slk.SearchFuzzyMatch(slackr.REALNAME, term)
 		if err != nil {
 			log.Fatal(err)
