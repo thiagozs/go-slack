@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"reflect"
 
 	"github.com/slack-go/slack"
 	"github.com/thiagozs/go-slack/options"
@@ -179,13 +180,14 @@ func (s *Slackr) SearchFuzzyMatch(kind Kind, term string) ([]ResultFuzzy, error)
 
 	s.fuzzy = fuzzy.NewFzfSearcher(s.terms)
 
-	rf := s.fuzzy.Search(term)
+	rf := s.fuzzy.Search(s.term)
 	rr := []ResultFuzzy{}
 
 	for _, r := range rf {
-
-		user := SlackrUser{}
 		for _, u := range usersSlack {
+
+			user := SlackrUser{}
+
 			switch kind {
 			case EMAIL:
 				if u.Profile.Email == r.SortKey {
@@ -205,13 +207,15 @@ func (s *Slackr) SearchFuzzyMatch(kind Kind, term string) ([]ResultFuzzy, error)
 				}
 			}
 
-			rr = append(rr, ResultFuzzy{
-				Match:   r.Match,
-				Query:   r.Query,
-				Score:   r.Score,
-				SortKey: r.SortKey,
-				User:    user,
-			})
+			if !reflect.DeepEqual(user, SlackrUser{}) {
+				rr = append(rr, ResultFuzzy{
+					Match:   r.Match,
+					Query:   r.Query,
+					Score:   r.Score,
+					SortKey: r.SortKey,
+					User:    user,
+				})
+			}
 		}
 	}
 

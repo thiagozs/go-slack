@@ -4,6 +4,7 @@ import (
 	"flag"
 	"log"
 	"os"
+	"regexp"
 
 	"github.com/thiagozs/go-slack/options"
 	"github.com/thiagozs/go-slack/pkg/utils"
@@ -64,14 +65,15 @@ func main() {
 		sendMsg = true
 
 	case byMatch:
+		term = regexp.MustCompile(`[^a-zA-Z0-9 ]+`).ReplaceAllString(term, " ")
 		users, err := slk.SearchFuzzyMatch(slackr.REALNAME, term)
 		if err != nil {
 			log.Fatal(err)
 		}
+
 		for _, res := range users {
 			if res.Score > 0.0 {
-				if res.Score >= score &&
-					userFound.Profile.RealName != res.User.Profile.RealName {
+				if res.Score >= score {
 					log.Printf("HIGH Score, AddLastPosition Match - id:%s username:%s realname:%s email:%s\n",
 						res.User.ID, res.User.Profile.FirstName,
 						res.User.Profile.RealName,
